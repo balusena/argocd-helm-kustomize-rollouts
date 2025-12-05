@@ -1,0 +1,22 @@
+replicaCount: 2
+
+image:
+  repository: nginx
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: NodePort
+  port: 80
+  nodePort: 30080     
+
+containerPort: 80
+
+rollout:
+  strategy: canary        # can be 'canary' or 'blueGreen'
+  steps:
+    - setWeight: 25
+    - pause: {duration: 15s}
+    - setWeight: 50
+    - pause: {duration: 15s}
+    - setWeight: 100
