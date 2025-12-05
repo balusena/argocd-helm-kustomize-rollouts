@@ -1,0 +1,25 @@
+{{- if eq .Values.rollout.strategy "blueGreen" }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Chart.Name }}-active
+spec:
+  selector:
+    app: {{ .Chart.Name }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.containerPort }}
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Chart.Name }}-preview
+spec:
+  selector:
+    app: {{ .Chart.Name }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.containerPort }}
+  type: ClusterIP
+{{- end }}
