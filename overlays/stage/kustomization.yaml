@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: stage-myapp
+namePrefix: stage-
+
+helmCharts:
+  - name: myapp
+    releaseName: myapp
+    chartPath: ../../helm/myapp
+    valuesFiles:
+      - values-stage.yaml
+    includeCRDs: false
