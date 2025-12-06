@@ -1,11 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Chart.Name }}-stable
+  name: {{ default (printf "%s-stable" .Chart.Name) .Values.rollout.stableService }}
 spec:
+  type: ClusterIP
   selector:
     app: {{ .Chart.Name }}
   ports:
-    - port: {{ .Values.service.port }}
+    - port: 80
       targetPort: {{ .Values.containerPort }}
-  type: ClusterIP
+    
