@@ -21,14 +21,21 @@ spec:
   strategy:
     {{- if eq .Values.rollout.strategy "canary" }}
     canary:
-      stableService: {{ .Chart.Name }}-stable
+      stableService: {{ default (printf "%s-stable" .Chart.Name) .Values.rollout.stableService }}
+      canaryService: {{ default (printf "%s-canary" .Chart.Name) .Values.rollout.canaryService }}
       steps:
         {{- range .Values.rollout.steps }}
-        - {{ toYaml . | nindent 8 }}
+        - {{ toYaml . | nindent 8 | trim }}
         {{- end }}
-    {{- else }}
+    {{- else if eq .Values.rollout.strategy "blueGreen" }}
     blueGreen:
-      activeService: {{ .Chart.Name }}-active
-      previewService: {{ .Chart.Name }}-preview
-      autoPromotionEnabled: true
+      activeService: {{ default (printf "%s-active" .Chart.Name) .Values.rollout.activeService }}
+      previewService: {{ default (printf "%s-preview" .Chart.Name) .Values.rollout.previewService }}
+      autoPromotionEnabled: {{ .Values.rollout.autoPromotionEnabled | default true }}
+    {{- else }}
+    # fallback default
+    canary:
+      stableService: {{ .Chart.Name }}-stable
+      canaryService: {{ .Chart.Name }}-canary
+      steps: []
     {{- end }}
