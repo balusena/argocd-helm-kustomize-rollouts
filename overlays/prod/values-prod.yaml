@@ -1,13 +1,20 @@
 replicaCount: 5
+
 image:
-  tag: latest
+  repository: nginx
+  tag: "1.23"
+
 service:
   nodePort: 30083
+
 rollout:
   strategy: canary
+  autoPromotionEnabled: false   # MANUAL PROD APPROVAL
   steps:
+    - setWeight: 5
+    - pause: {}   # SRE approval
     - setWeight: 25
-    - pause: {duration: 15s}
+    - pause: {}
     - setWeight: 50
-    - pause: {duration: 15s}
+    - pause: {}
     - setWeight: 100
